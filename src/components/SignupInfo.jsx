@@ -1,7 +1,32 @@
 import { Box, TextField, Typography } from "@mui/material";
+import {
+  validateEmail,
+  validatePasswordsMatch,
+} from "../validation/validateSignupInfo";
 import "../App.css";
 
-const SignupInfo = ({ formData, setFormData }) => {
+const SignupInfo = ({
+  formData,
+  setFormData,
+  emailError,
+  setEmailError,
+  passwordError,
+  setPasswordError,
+}) => {
+  // Clears email error message after condition is met by changing the form field
+  const handleEmailBlur = () => {
+    if (validateEmail(formData.email)) {
+      setEmailError("");
+    }
+  };
+
+  // Clears password error message after condition is met by changing the form field
+  const handlePasswordBlur = () => {
+    if (validatePasswordsMatch(formData.password, formData.confirmPassword)) {
+      setPasswordError("");
+    }
+  };
+
   return (
     <Box className="signup-info" sx={{ pt: 5, pb: 2 }}>
       <Typography>Signup Info</Typography>
@@ -14,6 +39,9 @@ const SignupInfo = ({ formData, setFormData }) => {
         onChange={(event) =>
           setFormData({ ...formData, email: event.target.value })
         }
+        error={!!emailError}
+        helperText={emailError}
+        onBlur={handleEmailBlur}
       />
       <TextField
         placeholder="Password"
@@ -24,6 +52,9 @@ const SignupInfo = ({ formData, setFormData }) => {
         onChange={(event) =>
           setFormData({ ...formData, password: event.target.value })
         }
+        error={!!passwordError}
+        helperText={passwordError}
+        onBlur={handlePasswordBlur}
       />
       <TextField
         placeholder="Confirm Password"

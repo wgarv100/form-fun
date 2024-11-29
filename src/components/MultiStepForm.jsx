@@ -7,11 +7,20 @@ import { Button } from "@mui/material";
 import SignupInfo from "./SignupInfo";
 import PersonalDetails from "./PersonalDetails";
 import Location from "./Location";
+import {
+  validateEmail,
+  validatePasswordsMatch,
+  validatePasswordNotEmpty,
+  validateStrongPassword,
+} from "../validation/validateSignupInfo";
 import "../App.css";
 
 const MultiStepForm = () => {
   const [page, setPage] = useState(0);
   const steps = ["Signup info", "Personal details", "Location"];
+
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const [formData, setFormData] = useState({
     email: "",
@@ -27,7 +36,16 @@ const MultiStepForm = () => {
 
   const PageDisplay = () => {
     if (page === 0) {
-      return <SignupInfo formData={formData} setFormData={setFormData} />;
+      return (
+        <SignupInfo
+          formData={formData}
+          setFormData={setFormData}
+          emailError={emailError}
+          setEmailError={setEmailError}
+          passwordError={passwordError}
+          setPasswordError={setPasswordError}
+        />
+      );
     } else if (page === 1) {
       return <PersonalDetails formData={formData} setFormData={setFormData} />;
     } else {
@@ -51,6 +69,28 @@ const MultiStepForm = () => {
     });
   }
 
+  const handleNextStep = () => {
+    if (page === 0 && !validateEmail(formData.email)) {
+      setEmailError("Please enter a valid email address.");
+    } else {
+      setEmailError("");
+    }
+    if (page === 0) {
+      if (!validatePasswordNotEmpty(formData.password)) {
+        setPasswordError("Please enter a password.");
+      } else if (
+        !validatePasswordsMatch(formData.password, formData.confirmPassword)
+      ) {
+        setPasswordError("Passwords do not match.");
+      } else if (!validateStrongPassword(formData.password)) {
+        setPasswordError("Password is not strong enough.");
+      } else {
+        setPasswordError("");
+        setPage(page + 1);
+      }
+    }
+  };
+
   return (
     <>
       <Box sx={{ mt: 5, mb: 5 }}>
@@ -72,11 +112,7 @@ const MultiStepForm = () => {
           >
             Previous
           </Button>
-          <Button
-            sx={{ pl: 2 }}
-            disabled={page > 2}
-            onClick={() => setPage(page + 1)}
-          >
+          <Button sx={{ pl: 2 }} disabled={page > 2} onClick={handleNextStep}>
             {page < 2 ? "Next" : "Submit"}
           </Button>
         </Box>
