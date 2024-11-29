@@ -8,12 +8,7 @@ import SignupInfo from "./SignupInfo";
 import PersonalDetails from "./PersonalDetails";
 import Location from "./Location";
 import Alert from "@mui/material/Alert";
-import {
-  validateEmail,
-  validatePasswordsMatch,
-  validatePasswordNotEmpty,
-  validateStrongPassword,
-} from "../validation/validateSignupInfo";
+import { validateStep0 } from "../validation/validateSignupInfo";
 import "../App.css";
 
 const MultiStepForm = () => {
@@ -71,24 +66,14 @@ const MultiStepForm = () => {
   }
 
   const handleNextStep = () => {
-    if (page === 0 && !validateEmail(formData.email)) {
-      setEmailError("Please enter a valid email address.");
-    } else {
-      setEmailError("");
-    }
+    let isValid = true;
+
     if (page === 0) {
-      if (!validatePasswordNotEmpty(formData.password)) {
-        setPasswordError("Please enter a password.");
-      } else if (
-        !validatePasswordsMatch(formData.password, formData.confirmPassword)
-      ) {
-        setPasswordError("Passwords do not match.");
-      } else if (!validateStrongPassword(formData.password)) {
-        setPasswordError("Password is not strong enough.");
-      } else {
-        setPasswordError("");
-        setPage(page + 1);
-      }
+      isValid = validateStep0(formData, setEmailError, setPasswordError);
+    }
+
+    if (isValid) {
+      setPage(page + 1);
     }
   };
 
