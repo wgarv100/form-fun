@@ -7,6 +7,7 @@ import { Button } from "@mui/material";
 import SignupInfo from "./SignupInfo";
 import PersonalDetails from "./PersonalDetails";
 import Location from "./Location";
+import Alert from "@mui/material/Alert";
 import {
   validateEmail,
   validatePasswordsMatch,
@@ -93,7 +94,7 @@ const MultiStepForm = () => {
 
   return (
     <>
-      <Box sx={{ mt: 5, mb: 5 }}>
+      <Box className="stepper-container" sx={{ mt: 5, mb: 5 }}>
         <Stepper activeStep={page} alternativeLabel>
           {steps.map((label) => (
             <Step key={label}>
@@ -102,9 +103,9 @@ const MultiStepForm = () => {
           ))}
         </Stepper>
       </Box>
-      <Box>
-        <Box>{PageDisplay()}</Box>
-        <Box className="button-box">
+      <Box className="form-container">
+        {PageDisplay()}
+        <Box className="button-container">
           <Button
             sx={{ pr: 2 }}
             disabled={page === 0}
@@ -115,6 +116,18 @@ const MultiStepForm = () => {
           <Button sx={{ pl: 2 }} disabled={page > 2} onClick={handleNextStep}>
             {page < 2 ? "Next" : "Submit"}
           </Button>
+        </Box>
+        <Box className="alert-container">
+          {emailError && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {emailError}
+            </Alert>
+          )}
+          {passwordError && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {passwordError}
+            </Alert>
+          )}
         </Box>
       </Box>
     </>
